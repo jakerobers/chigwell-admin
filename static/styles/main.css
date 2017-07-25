@@ -23,45 +23,55 @@ hr {
 	padding: 0;
 }
 
+a.active {
+	color: #333;
+}
+
+/** General purpose Class Selectors **/
+.text-center {
+	text-align: center;
+}
+
+
 /** Media Queries **/
 @media(min-width:992px) {
  	height: 100%;
 
-	.Home {
+	.Main {
 		height: 100%;
 	}
 
-	.Home--left-menu {
+	.Main--left-menu {
 		border-right: 1px solid #eee;
 		height: 100%;
 	}
 }
 
 /** Class Selectors **/
-.Home{
+.Main{
 }
 
-.Home {
-
-}
-
-.Home--left-menu {
+.Main {
 
 }
 
+.Main--left-menu {
 
-.Home--left-menu ul {
+}
+
+
+.Main--left-menu ul {
 	list-style-type: none;
 	margin-top: 30px;
 	padding-left: 5px;
 }
 
-.Home--left-menu li {
+.Main--left-menu li {
 	height: 3rem;
 	font-size: 1.7rem;
 }
 
-.Home--content {
+.Main--content {
 
 }
 
