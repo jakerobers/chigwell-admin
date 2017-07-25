@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap-theme.min.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+	</head>	
+
+	<body>
+		
+		<div class="wrapper">
+			<div class="container-fluid Header">
+				<div class="row"><h1 class="col-sm-12 col-md-4">Chigwell Admin</h1></div>
+				<div class="row"><hr class="col-sm-12" /></div>
+			</div>
+
+			<div class="container-fluid Home">
+				<div class="Home--left-menu col-sm-12 col-md-3">
+					<ul>
+						<li>Accounts</li>
+						<li>Expenses</li>
+						<li>Depreciation</li>
+						<li>Peeps</li>
+						<li>Settings</li>
+					</ul>
+				</div>
+
+				<div class="Home--content col-sm-12 col-md-9">
+					<h2>Content</h2>
+				</div>
+			</div>
+		</div>
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="{{ url_for('static', filename='scripts/bootstrap.min.js') }}"></script>	
+	</body>
+</html>
