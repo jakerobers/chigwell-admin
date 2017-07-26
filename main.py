@@ -1,101 +1,110 @@
 import os
 import sqlite3
-from flask import Flask, render_template, session, redirect, url_for, escape, request
+import subprocess
+from flask import Flask, render_template, session, redirect, url_for, escape, request, flash
 
 app = Flask(__name__)
-app.config.from_object(__name__)
-
-# Load default config and override config from an environment variable
-app.config.update(dict(
-    DATABASE=os.path.join(app.root_path, 'chigwell-admin.db'),
-    SECRET_KEY='development key',# TODO: Refactor to another config.
-    USERNAME='admin',# TODO: Refactor to another config.
-    PASSWORD='default' # TODO: Refactor to another config.
-    ))
-
-app.config.from_envvar('ADMIN_SETTINGS', silent=True)
-
-def connect_db():
-    """Connects to the specific database."""
-    rv = sqlite3.connect(app.config['DATABASE'])
-    rv.row_factory = sqlite3.Row
-    return rv
-
-def get_db():
-    """Opens a new database connection if there is none yet for the
-    current application context.
-    """
-    if not hasattr(g, 'sqlite_db'):
-        g.sqlite_db = connect_db()
-    return g.sqlite_db
-
-@app.teardown_appcontext
-def close_db(error):
-    """Closes the database again at the end of the request."""
-    if hasattr(g, 'sqlite_db'):
-        g.sqlite_db.close()
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session['email'] = request.form['email']
-        return redirect(url_for('home'))
-    return render_template("login.html")
-
-@app.route('/logout')
-def logout():
-    # remove the email from the session if it's there
-    session.pop('email', None)
-    return redirect(url_for('home'))
 
 # set the secret key.  keep this really secret:
-app.secret_key = 'werhKABsflwkjqbflkajdsbasjkdfbaslkjdfbaslk'
+app.secret_key = os.environ["SECRET_KEY"] 
 
-@app.route('/')
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        admin_email = os.environ["ADMIN_EMAIL"]
+        admin_password = os.environ["ADMIN_PASSWORD"]
+        request_email = ""
+        request_password = ""
+
+        if "email" in request.form:
+            request_email = request.form["email"]
+
+        if "password" in request.form:
+            request_password = request.form["password"]
+
+        if request_email == admin_email and request_password == admin_password:
+            session["email"] = request_email
+            return redirect(url_for("home"))
+        else:
+            error = "Incorrect username or password."
+            return render_template("login.html", error=error)
+    else:
+        return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    # remove the email from the session if it"s there
+    session.pop("email", None)
+    return redirect(url_for("home"))
+
+
+@app.route("/")
 def home():
-    if 'email' in session:
-        return render_template('home.html')
-    else:
-        return render_template('login.html')
+    if "email" in session:
+        if "LEDGER_FILE" in os.environ:
+            ledger_file = os.environ["LEDGER_FILE"]
+            bash_command = "ledger -f " + ledger_file + " balance --no-total"
+            process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+            ledger = output.decode(encoding="utf-8", errors="strict")
+            ledger = "\n" + ledger
 
-@app.route('/accounts')
+            return render_template("home.html", ledger=ledger)
+        else:
+            error = "The LEDGER_FILE env variable must be defined."
+            return render_template("home.html", error=error)
+    else:
+        return render_template("login.html")
+
+@app.route("/accounts")
 def accounts():
-    if 'email' in session:
-        return render_template('accounts.html')
+    if "email" in session:
+        if "LEDGER_FILE" in os.environ:
+            ledger_file = os.environ["LEDGER_FILE"]
+            bash_command = "ledger -f " + ledger_file + " accounts"
+            process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+            ledger = output.decode(encoding="utf-8", errors="strict")
+            ledger = "\n" + ledger
+
+            return render_template("accounts.html", ledger=ledger)
+        else:
+            error = "The LEDGER_FILE env variable must be defined."
+            return render_template("accounts.html", error=error)
     else:
-        return render_template('login.html')
+        return render_template("login.html")
 
 
-@app.route('/expenses')
+@app.route("/expenses")
 def expenses():
-    if 'email' in session:
-        return render_template('expenses.html')
+    if "email" in session:
+        return render_template("expenses.html")
     else:
-        return render_template('login.html')
+        return render_template("login.html")
 
 
-@app.route('/depreciation')
+@app.route("/depreciation")
 def depreciation():
-    if 'email' in session:
-        return render_template('depreciation.html')
+    if "email" in session:
+        return render_template("depreciation.html")
     else:
-        return render_template('login.html')
+        return render_template("login.html")
 
 
-@app.route('/peeps')
+@app.route("/peeps")
 def peeps():
-    if 'email' in session:
-        return render_template('peeps.html')
+    if "email" in session:
+        return render_template("peeps.html")
     else:
-        return render_template('login.html')
+        return render_template("login.html")
 
-@app.route('/settings')
+@app.route("/settings")
 def settings():
-    if 'email' in session:
-        return render_template('settings.html')
+    if "email" in session:
+        return render_template("settings.html")
     else:
-        return render_template('login.html')
+        return render_template("login.html")
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+    return render_template("page_not_found.html"), 404

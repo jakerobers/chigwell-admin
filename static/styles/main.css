@@ -32,6 +32,9 @@ a.active {
 	text-align: center;
 }
 
+.error {
+  color: #FF0033;
+}
 
 /** Media Queries **/
 @media(min-width:992px) {

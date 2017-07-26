@@ -1,6 +1,5 @@
 ```
-export FLASK_APP=main.py
-flask run --host=0.0.0.0
+source env && flask run --host=0.0.0.0
 ```
 
 

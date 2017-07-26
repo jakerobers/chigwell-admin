@@ -1,41 +1,44 @@
 <html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-		<link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.min.css') }}">
-		<link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap-theme.min.css') }}">
-		<link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
-		<title>Admin-Login</title>
-	</head>	
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap-theme.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <title>Admin-Login</title>
+  </head>	
 
-	<body>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1 class="text-center">Admin</h1>
+        </div>
+      </div>
 
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-12">
-					<h1 class="text-center">Admin</h1>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="Main--content col-sm-12 col-md-offset-4 col-md-4">
-        	<form method="post" action="/login">
-						<div class="form-group">
-    					<label for="exampleInputEmail1">Email address</label>
-    					<input type="email" class="form-control" id="email" name="email" placeholder="Email">
-  					</div>
-  					<div class="form-group">
-    					<label for="exampleInputPassword1">Password</label>
-    					<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  					</div>
-          	<button type="submit" class="btn btn-default">Login</button>
-        	</form>
-				</div>
-			</div>
-		</div>
-
-		<!-- Latest compiled and minified JavaScript -->
-		<script src="{{ url_for('static', filename='scripts/bootstrap.min.js') }}"></script>	
-	</body>
+      <div class="row">
+        <div class="Main--content col-sm-12 col-md-offset-4 col-md-4">
+          <form method="post" action="/login">
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" id="password" name="password"  placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-default">Login</button>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        {% if error %}
+        <p class="col-sm-12 col-md-offset-4 col-md-4 error">{{ error }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="{{ url_for('static', filename='scripts/bootstrap.min.js') }}"></script>	
+  </body>
 </html>
