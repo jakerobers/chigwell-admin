@@ -78,7 +78,18 @@ def accounts():
 @app.route("/expenses")
 def expenses():
     if "email" in session:
-        return render_template("expenses.html")
+        if "LEDGER_FILE" in os.environ:
+            ledger_file = os.environ["LEDGER_FILE"]
+            bash_command = "ledger -fc " + ledger_file + " reg"
+            process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
+            output, error = process.communicate()
+            ledger = output.decode(encoding="utf-8", errors="strict")
+            ledger = "\n" + ledger
+
+            return render_template("expenses.html", ledger=ledger)
+        else:
+            error = "The LEDGER_FILE env variable must be defined."
+            return render_template("expenses.html", error=error)
     else:
         return render_template("login.html")
 
